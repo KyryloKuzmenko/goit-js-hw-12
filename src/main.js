@@ -1,18 +1,31 @@
-
 import { getImage } from './js/pixabay-api.js';
-import { markup, showLoader, hideLoader } from './js/render-functions.js';
+import {
+  markup,
+  showLoader,
+  hideLoader,
+  showBtn,
+  hiddenBtn,
+} from './js/render-functions.js';
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 
 export const refs = {
+  loadMoreBtn: document.querySelector('.js-load-more'),
   form: document.querySelector('.form'),
   gallery: document.querySelector('.gallery'),
   loader: document.querySelector('.loader'),
 };
 
-refs.form.addEventListener('submit', e => {
-  refs.gallery.innerHTML = '';
+let page = 1;
+let searchQuery = null;
+
+refs.form.addEventListener('submit', async e => {
   e.preventDefault();
+  refs.gallery.innerHTML = '';
+  showLoader();
+  hiddenBtn();
+  page = 1;
+  searchQuery = e.currentTarget.elements['search'].value.trim();
   const value = e.target.elements.search.value.trim();
   if (value === '') {
     return iziToast.warning({
@@ -22,23 +35,50 @@ refs.form.addEventListener('submit', e => {
       displayMode: 'once',
     });
   }
+  
+  try {
+    const res = await getImage(searchQuery, page);
+    refs.gallery.innerHTML = markup(res.hits);
+    if (res.totalHits > 12) {
+      showBtn();
+    }
+  } catch (error) {
+    console.log(error)
+  } finally {
+    e.target.reset();
+    hideLoader();
+  }
+});
 
+refs.loadMoreBtn.addEventListener('click', async () => {
+  page++;
   showLoader();
-  getImage(value)
-    .then(data => {
-      if (data.hits.length === 0) {
-        iziToast.show({
-          message:
-            'Sorry, there are no images matching your search query. Please try again!',
-          position: 'topRight',
-          displayMode: 'once',
-        });
-      }
-      markup(data.hits);
-    })
-    .catch(() => {})
-    .finally(() => {
-      hideLoader();
-      refs.form.reset();
+  try {
+    const res = await getImage(searchQuery, page);
+    refs.gallery.insertAdjacentHTML('beforeend', markup(res.hits));
+    //================================scrol
+    const { height: cardHeight } = document
+      .querySelector('.gallery')
+      .firstElementChild.getBoundingClientRect();
+
+    window.scrollBy({
+      top: cardHeight * 2,
+      behavior: 'smooth',
     });
+    //===============================/scrol
+    console.log(res.total)
+    const lastPage = Math.ceil(res.total / 12);
+    console.log(lastPage)
+    if (page === lastPage && res.total < 15) {
+      hiddenBtn();
+      iziToast.info({
+        position: 'topRight',
+        message: "We're sorry, but you've reached the end of search results.",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  } finally {
+    hideLoader();
+  }
 });
