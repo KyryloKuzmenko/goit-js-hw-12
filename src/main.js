@@ -39,9 +39,10 @@ refs.form.addEventListener('submit', async e => {
   try {
     const res = await getImage(searchQuery, page);
     refs.gallery.innerHTML = markup(res.hits);
-    if (res.totalHits > 12) {
+    if (res.totalHits > 15) {
       showBtn();
     }
+    
   } catch (error) {
     console.log(error)
   } finally {
@@ -66,10 +67,8 @@ refs.loadMoreBtn.addEventListener('click', async () => {
       behavior: 'smooth',
     });
     //===============================/scrol
-    console.log(res.total)
-    const lastPage = Math.ceil(res.total / 12);
-    console.log(lastPage)
-    if (page === lastPage && res.total < 15) {
+    const lastPage = Math.ceil(res.total / 15);
+    if (page === lastPage) {
       hiddenBtn();
       iziToast.info({
         position: 'topRight',
