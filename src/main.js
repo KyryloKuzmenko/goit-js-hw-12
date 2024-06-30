@@ -5,6 +5,7 @@ import {
   hideLoader,
   showBtn,
   hiddenBtn,
+  lightbox,
 } from './js/render-functions.js';
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
@@ -20,8 +21,8 @@ let page = 1;
 let searchQuery = null;
 
 refs.form.addEventListener('submit', async e => {
-  refs.gallery.innerHTML = '';
   e.preventDefault();
+  refs.gallery.innerHTML = '';
   showLoader();
   hiddenBtn();
   page = 1;
@@ -38,7 +39,7 @@ refs.form.addEventListener('submit', async e => {
   
   try {
     const res = await getImage(searchQuery, page);
-    markup(res.hits);
+    refs.gallery.innerHTML = markup(res.hits);
     if (res.totalHits > 15) {
       showBtn();
     }

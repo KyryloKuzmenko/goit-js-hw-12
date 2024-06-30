@@ -3,7 +3,7 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 import { refs } from '../main';
 
 export function markup(images) {
-  const markupCreate = images
+  const createMarkup = images
     .map(image => {
       return `<li class="gallery-item"
       <a class="gallery-link" href="${image.largeImageURL}">
@@ -24,13 +24,13 @@ export function markup(images) {
         `;
     })
     .join('');
-  refs.gallery.innerHTML = markupCreate;
+  refs.gallery.innerHTML = createMarkup;
   lightbox.refresh();
 }
 
   
 
-const lightbox = new SimpleLightbox('.gallery li', {
+export const lightbox = new SimpleLightbox('.gallery li', {
   captionsData: 'alt',
   captionDelay: 250,
 });
