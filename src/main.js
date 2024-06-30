@@ -1,21 +1,15 @@
 import { getImage } from './js/pixabay-api.js';
-import {
-  markup,
-  showLoader,
-  hideLoader,
-  showBtn,
-  hiddenBtn,
-  lightbox,
-} from './js/render-functions.js';
+import { markup } from './js/render-functions.js';
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
+import { refs, showBtn, showLoader, hiddenBtn, hideLoader } from './js/refs.js';
 
-export const refs = {
-  loadMoreBtn: document.querySelector('.js-load-more'),
-  form: document.querySelector('.form'),
-  gallery: document.querySelector('.gallery'),
-  loader: document.querySelector('.loader'),
-};
+const lightbox = new SimpleLightbox('.gallery li', {
+  captionsData: 'alt',
+  captionDelay: 250,
+});
 
 let page = 1;
 let searchQuery = null;
@@ -36,16 +30,16 @@ refs.form.addEventListener('submit', async e => {
       displayMode: 'once',
     });
   }
-  
+
   try {
     const res = await getImage(searchQuery, page);
     refs.gallery.innerHTML = markup(res.hits);
+    lightbox.refresh();
     if (res.totalHits > 15) {
       showBtn();
     }
-    
   } catch (error) {
-    console.log(error)
+    console.log(error);
   } finally {
     e.target.reset();
     hideLoader();
@@ -58,6 +52,7 @@ refs.loadMoreBtn.addEventListener('click', async () => {
   try {
     const res = await getImage(searchQuery, page);
     refs.gallery.insertAdjacentHTML('beforeend', markup(res.hits));
+    lightbox.refresh();
     //================================scrol
     const { height: cardHeight } = document
       .querySelector('.gallery')

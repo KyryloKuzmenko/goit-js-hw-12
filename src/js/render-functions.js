@@ -1,9 +1,5 @@
-import SimpleLightbox from 'simplelightbox';
-import 'simplelightbox/dist/simple-lightbox.min.css';
-import { refs } from '../main';
-
 export function markup(images) {
-  const createMarkup = images
+  return images
     .map(image => {
       return `<li class="gallery-item"
       <a class="gallery-link" href="${image.largeImageURL}">
@@ -24,31 +20,4 @@ export function markup(images) {
         `;
     })
     .join('');
-  refs.gallery.innerHTML = createMarkup;
-  lightbox.refresh();
-}
-
-  
-
-export const lightbox = new SimpleLightbox('.gallery li', {
-  captionsData: 'alt',
-  captionDelay: 250,
-});
-
-
-
-export function showLoader() {
-  refs.loader.classList.remove('hidden');
-}
-
-export function hideLoader() {
-  refs.loader.classList.add('hidden');
-}
-
-
-export function showBtn() {
-  refs.loadMoreBtn.classList.remove('is-hidden');
-}
-export function hiddenBtn() {
-  refs.loadMoreBtn.classList.add('is-hidden');
 }
