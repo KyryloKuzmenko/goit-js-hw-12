@@ -3,28 +3,29 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 import { refs } from '../main';
 
 export function markup(images) {
-  const createdMarkup = images
-    .map(img => { return `<li class="gallery-item"
-      <a class="gallery-link" href="${img.largeImageURL}">
+  const markupCreate = images
+    .map(image => {
+      return `<li class="gallery-item"
+      <a class="gallery-link" href="${image.largeImageURL}">
     <img
       width=360;
       height=200;
       class="gallery-image"
-      src="${img.webformatURL}"
-      alt="${img.tags} " />
+      src="${image.webformatURL}"
+      alt="${image.tags} " />
           <div class="image-info">
-               <p>LIKES: ${img.likes}</p>
-                    <p>VIEWS: ${img.views}</p>
-                    <p>COMMENTS: ${img.comments}</p>
-                    <p>DOWNLOADS: ${img.downloads}</p>
+               <p>LIKES: ${image.likes}</p>
+                    <p>VIEWS: ${image.views}</p>
+                    <p>COMMENTS: ${image.comments}</p>
+                    <p>DOWNLOADS: ${image.downloads}</p>
                 </div>
             </a>
             </li>
         `;
     })
     .join('');
+  refs.gallery.innerHTML = markupCreate;
   lightbox.refresh();
-  return createdMarkup;
 }
 
   

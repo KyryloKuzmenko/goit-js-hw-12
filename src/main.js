@@ -20,8 +20,8 @@ let page = 1;
 let searchQuery = null;
 
 refs.form.addEventListener('submit', async e => {
-  e.preventDefault();
   refs.gallery.innerHTML = '';
+  e.preventDefault();
   showLoader();
   hiddenBtn();
   page = 1;
@@ -38,7 +38,7 @@ refs.form.addEventListener('submit', async e => {
   
   try {
     const res = await getImage(searchQuery, page);
-    refs.gallery.innerHTML = markup(res.hits);
+    markup(res.hits);
     if (res.totalHits > 15) {
       showBtn();
     }
